@@ -31,3 +31,12 @@ eval_df = pd.DataFrame(eval_data)
 eval_df.columns = ["text", "labels"]
 
 model_args = ClassificationArgs(num_train_epochs=10)
+
+model = ClassificationModel(
+    "roberta", "roberta-base", args=model_args
+)
+model.train_model(train_df)
+# Evaluate the model
+result, model_outputs, wrong_predictions = model.eval_model(eval_df)
+# Make predictions with the model
+predictions, raw_outputs = model.predict(["yousef"])
