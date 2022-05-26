@@ -38,27 +38,17 @@ for email in emails:
     clean_name = re.sub(pattern=r"([0-9])",
                         string=part_1,
                         repl="")
+    search = re.search(string=clean_name, pattern=f"\b[a-z]\b")
+    if clean_name.startswith("."):
+        continue
     if "." in clean_name:
         split_name = clean_name.split(".")
     elif "-" in clean_name:
         split_name = clean_name.split("-")
+    elif not search == None:
+        continue
     else:
         continue
     for word in split_name:
         if word in surname:
             print(colored(f"the {word} surname was founded in >>>>>>>>>>>> {email}"))
-
-
-# names = split_by_dot(clean_name)
-#
-# for element in names:
-#
-#     if "." in element:
-#         split_name = element.split(".")
-#     elif "-" in element:
-#         split_name = element.split("-")
-#     else:
-#         continue
-#     for word in split_name:
-#         if word in surname:
-#             print(colored(f"the {word} surname was found in"))
