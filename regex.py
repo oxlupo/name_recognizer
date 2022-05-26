@@ -1,18 +1,19 @@
 import re
 import pandas as pd
-import names_dataset
-
+from termcolor import colored
 
 def dataset_loader():
+    """load dataset for finding firstname and lastname """
+    with open("names-databases/surnames/all.txt", 'r', encoding='utf-8') as file:
+        dataset = file.read()
+        surname = dataset.split("\n")
+    with open("names-databases/first names/all.txt", 'r', encoding="utf-8") as file:
+        dataset = file.read()
+        first_name = dataset.split("\n")
+    first_name = list(map(lambda x: x.lower(), first_name))
+    surname= list(map(lambda x: x.lower(), surname))
 
-    name_dataset = names_dataset.NameDataset()
-    first_name = name_dataset.first_names
-    last_name = name_dataset.last_names
-
-    first_name_list = [x for x in first_name.keys()]
-    last_name_list  = [x for x in last_name.keys()]
-
-    return first_name_list, last_name_list
+    return list(set(first_name)), list(set(surname))
 
 
 def split_by_dot(list_):
@@ -25,10 +26,39 @@ def split_by_dot(list_):
 
 
 emails_df = pd.read_csv("emails_100k.csv", date_parser=True)
-email = list(emails_df["email"])
-part_1 = list(map(lambda x: x.split("@")[0], email))
+emails = list(emails_df["email"])
+part_1 = list(map(lambda x: x.split("@")[0], emails))
 clean_name = list(map(lambda x: re.sub(pattern=r"([0-9])",
                                        string=x,
                                        repl=""), part_1))
 
-name = split_by_dot(clean_name)
+first_name, surname = dataset_loader()
+for email in emails:
+    part_1 = email.split("@")[0]
+    clean_name = re.sub(pattern=r"([0-9])",
+                        string=part_1,
+                        repl="")
+    if "." in clean_name:
+        split_name = clean_name.split(".")
+    elif "-" in clean_name:
+        split_name = clean_name.split("-")
+    else:
+        continue
+    for word in split_name:
+        if word in surname:
+            print(colored(f"the {word} surname was founded in >>>>>>>>>>>> {email}"))
+
+
+# names = split_by_dot(clean_name)
+#
+# for element in names:
+#
+#     if "." in element:
+#         split_name = element.split(".")
+#     elif "-" in element:
+#         split_name = element.split("-")
+#     else:
+#         continue
+#     for word in split_name:
+#         if word in surname:
+#             print(colored(f"the {word} surname was found in"))
