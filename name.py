@@ -20,21 +20,22 @@ for key, value in first_name.items():
 
 
 for key, value in last_name.items():
-    first_name_list.append([key, 1])
+    last_name_list.append([key, 1])
 
-train_data = first_name_list[:len(first_name_list)//2] + last_name_list[:len(last_name_list)//2]
+train_data = first_name_list[:len(first_name_list)//10000] + last_name_list[:len(last_name_list)//10000]
 train_df = pd.DataFrame(train_data)
 train_df.columns = ["text", "labels"]
 
-eval_data = first_name_list[len(first_name_list)//2:] + last_name_list[len(last_name_list)//2:]
+eval_data = first_name_list[11000:11040] + last_name_list[11000:11040]
 eval_df = pd.DataFrame(eval_data)
 eval_df.columns = ["text", "labels"]
 
 model_args = ClassificationArgs(num_train_epochs=10)
 
 model = ClassificationModel(
-    "roberta", "roberta-base", args=model_args
+    "roberta", "roberta-base", args=model_args, use_cuda=False
 )
+
 model.train_model(train_df)
 # Evaluate the model
 result, model_outputs, wrong_predictions = model.eval_model(eval_df)
