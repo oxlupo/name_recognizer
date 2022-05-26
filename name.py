@@ -1,5 +1,3 @@
-import re
-
 import names_dataset
 import pandas as pd
 import logging
