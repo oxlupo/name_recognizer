@@ -2,6 +2,7 @@ import re
 import pandas as pd
 from termcolor import colored
 
+
 def dataset_loader():
     """load dataset for finding firstname and lastname """
     with open("names-databases/surnames/all.txt", 'r', encoding='utf-8') as file:
@@ -11,7 +12,7 @@ def dataset_loader():
         dataset = file.read()
         first_name = dataset.split("\n")
     first_name = list(map(lambda x: x.lower(), first_name))
-    surname= list(map(lambda x: x.lower(), surname))
+    surname = list(map(lambda x: x.lower(), surname))
 
     return list(set(first_name)), list(set(surname))
 
@@ -32,23 +33,39 @@ clean_name = list(map(lambda x: re.sub(pattern=r"([0-9])",
                                        string=x,
                                        repl=""), part_1))
 
-first_name, surname = dataset_loader()
-for email in emails:
-    part_1 = email.split("@")[0]
-    clean_name = re.sub(pattern=r"([0-9])",
-                        string=part_1,
-                        repl="")
-    search = re.search(string=clean_name, pattern=f"\b[a-z]\b")
-    if clean_name.startswith("."):
-        continue
-    if "." in clean_name:
-        split_name = clean_name.split(".")
-    elif "-" in clean_name:
-        split_name = clean_name.split("-")
-    elif not search == None:
-        continue
-    else:
-        continue
-    for word in split_name:
-        if word in surname:
-            print(colored(f"the {word} surname was founded in >>>>>>>>>>>> {email}"))
+with open("general_list.txt", 'r') as file:
+    general_list = file.read()
+    general_list = general_list.split(f"\n")
+
+
+def name_finder(email_list):
+    for email in email_list:
+        part = email.split("@")[0]
+        clean_name = re.sub(pattern=r"([0-9])",
+                            string=part,
+                            repl="")
+        search = re.search(string=clean_name, pattern=f"\b[a-z]\b")
+        if clean_name.startswith("."):
+            continue
+        if "." in clean_name:
+            split_name = clean_name.split(".")
+        elif "-" in clean_name:
+            split_name = clean_name.split("-")
+        elif not search == None:
+            continue
+        else:
+            continue
+        last_name = split_name[1]
+        first_name = split_name[0]
+        if len(last_name) in range(3, 150):
+            if len(first_name) in range(3, 150):
+                if not last_name in general_list:
+                    print(colored(f"the {last_name} was found in {email}", "green"))
+                    print(colored(f"the {first_name} was found in {email}", "yellow"))
+            elif not len(first_name) in range(3, 150):
+                if not last_name in general_list:
+                    print(colored(f"the {last_name} was found in {email}", "red"))
+        else:
+            continue
+
+
