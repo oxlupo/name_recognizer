@@ -1,7 +1,8 @@
+from termcolor import colored
+from tqdm import tqdm
 import re
 import pandas as pd
-import tqdm
-from termcolor import colored
+
 
 def dataset_loader():
     """load dataset for finding firstname and lastname """
@@ -106,16 +107,102 @@ def surname_finder(email_dict, surname):
 first_name, last_name = dataset_loader()
 last_name.pop(0)
 limit_email = emails[:5000]
-count = 0
-for email in tqdm.tqdm(limit_email, total=len(limit_email)):
 
-    email_dict = name_finder(email)
-    if email_dict["status"] == False:
-        surname = surname_finder(email_dict=email_dict, surname=last_name)
-        if not surname == []:
-            print(colored(surname, "yellow"))
+
+def total_finder():
+    """find all firstname if exist and surname if exists in a json file"""
+    false_email = []
+    count = 0
+    true_emails = []
+    t_file = open("true_email.txt", "w")
+    for email in tqdm(limit_email, total=len(limit_email)):
+
+        email_dict = name_finder(email)
+        if email_dict["status"] == False:
+            surname = surname_finder(email_dict=email_dict, surname=last_name)
+            if not surname == []:
+                print(colored(surname, "yellow"))
+                count += 1
+                true_emails.append(email)
+            else:
+                false_email.append(email_dict["email"])
+        else:
+            print(colored(name_finder(email), "green"))
             count += 1
-    else:
-        print(colored(name_finder(email), "green"))
-        count += 1
-print(count)
+            true_emails.append(email)
+    for element in true_emails:
+        t_file.write(element + "\n")
+
+    # print(count)
+    # text_file = open("false_email.txt", "w")
+    # for element in false_email:
+    #     text_file.write(element + "\n")
+    # text_file.close()
+total_finder()
+# total_finder()
+# with open("false_email.txt", "r") as e:
+#     data = e.read()
+#     data = data.split("\n")
+#     count = 0
+#     f_email = []
+#     text_file = open("final_false_email.txt", "w")
+#     for email in data:
+#
+#         email_split = email.split("@")[0]
+#         for gen in general_list:
+#             if gen == email_split:
+#                 count += 1
+#                 f_email.append(email)
+#     for email in data:
+#         if not email in f_email:
+#             text_file.write(email + "\n")
+#
+#     text_file.close()
+#     print(count)
+#     print(f_email)
+
+# with open('file.txt', 'r') as file:
+#     f_file = open("file-0.txt", "w")
+#     file = file.read()
+#     file = file.split("\n")
+#     for email in limit_email:
+#         email_split = email.split("@")[0]
+#         if email_split in general_list:
+#             f_file.write(email + "\n")
+#     print(len(file))
+#     f_list = []
+
+
+    # for email in file:
+    #     email_split = email.split("@")[0]
+    #     email_re = re.sub(pattern="[0-9]", string=email_split, repl="")
+    #     if len(email_re) in range(0,4):
+    #         count += 1
+    #         print(email)
+    #         f_list.append(email)
+    # for f in file:
+    #     if f in f_list:
+    #         continue
+    #     else:
+    #         f_file.write(f + "\n")
+    # final_list = []
+    # for email in file:
+    #     email = re.sub(pattern="([0-9])", string=email, repl="")
+    #     email_split = email.split("@")[0]
+    #     parts = " "
+    #     if "-" in email_split:
+    #         parts = email_split.split("-")
+    #     if "_" in email_split:
+    #         parts = email_split.split("_")
+    #     if "." in email_split:
+    #         parts = email_split.split(".")
+    #     if not parts == " ":
+    #         for gen in general_list:
+    #             for part in parts:
+    #                 if gen == part:
+    #                     final_list.append(email)
+    # print(count)
+    # for f in file:
+    #     if not f in final_list:
+    #         f_file.write(f + "\n")
+    #
