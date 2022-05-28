@@ -1,10 +1,11 @@
 import re
 import pandas as pd
+import tqdm
 from termcolor import colored
 
 def dataset_loader():
     """load dataset for finding firstname and lastname """
-    with open("names-databases/surnames/all.txt", 'r', encoding='utf-8') as file:
+    with open("names-databases/surnames/us.txt", 'r', encoding='utf-8') as file:
         dataset = file.read()
         surname = dataset.split("\n")
     with open("names-databases/first names/all.txt", 'r', encoding="utf-8") as file:
@@ -84,10 +85,37 @@ def name_finder(email):
 
     return email_dict
 
-for email in emails:
+
+def surname_finder(email_dict, surname):
+    """ find surname that one part """
+    final_list = []
+    split_email = email_dict["email"].split("@")[0]
+
+    for word in surname:
+        if len(word) in range(4, 150):
+            if not word in general_list:
+                if word == split_email:
+                    email_dict["surname"] = word
+                    email_dict["status"] = True
+
+                    return email_dict
+
+    return final_list
+
+
+first_name, last_name = dataset_loader()
+last_name.pop(0)
+limit_email = emails[:5000]
+count = 0
+for email in tqdm.tqdm(limit_email, total=len(limit_email)):
+
     email_dict = name_finder(email)
     if email_dict["status"] == False:
-        print(colored(name_finder(email), "red"))
+        surname = surname_finder(email_dict=email_dict, surname=last_name)
+        if not surname == []:
+            print(colored(surname, "yellow"))
+            count += 1
     else:
         print(colored(name_finder(email), "green"))
-
+        count += 1
+print(count)
