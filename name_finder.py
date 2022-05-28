@@ -36,7 +36,7 @@ clean_name = list(map(lambda x: re.sub(pattern=r"([0-9])",
 
 with open("general_list.txt", 'r') as file:
     general_list = file.read()
-    general_list = general_list.split(f"\n")
+    general_list = list(set(general_list.split(f"\n")))
 
 
 def name_finder(email):
@@ -107,6 +107,28 @@ def surname_finder(email_dict, surname):
 first_name, last_name = dataset_loader()
 last_name.pop(0)
 limit_email = emails[:5000]
+def find_general(false_list):
+    """ this function return email that have general :return """
+    general_emails = []
+    for email in false_list:
+        email_split = email.split("@")[0]
+        email_split = re.sub(pattern="[0-9]", string=email_split, repl="")
+
+        if email_split in general_list:
+            general_emails.append(email)
+        parts = ""
+        if "." in email_split:
+            parts = email_split.split(".")
+        elif "-" in email_split:
+            parts = email_split.split("-")
+        elif "_" in email_split:
+            parts = email_split.split("_")
+        else:
+            continue
+        for part in parts:
+            if part in general_list:
+                general_emails.append(email)
+    return general_emails
 
 
 def total_finder():
@@ -114,7 +136,7 @@ def total_finder():
     false_email = []
     count = 0
     true_emails = []
-    t_file = open("true_email.txt", "w")
+
     for email in tqdm(limit_email, total=len(limit_email)):
 
         email_dict = name_finder(email)
@@ -131,8 +153,9 @@ def total_finder():
             count += 1
             true_emails.append(email)
     check_list = []
+    true_file = open("true_email.txt", "w")
     for element in true_emails:
-        t_file.write(element + "\n")
+        true_file.write(element + "\n")
     fo = open("with_out_general_list.txt", "w")
     for email in false_email:
         email_split = email.split("@")[0]
