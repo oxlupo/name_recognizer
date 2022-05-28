@@ -130,79 +130,29 @@ def total_finder():
             print(colored(name_finder(email), "green"))
             count += 1
             true_emails.append(email)
+    check_list = []
     for element in true_emails:
         t_file.write(element + "\n")
+    fo = open("with_out_general_list.txt", "w")
+    for email in false_email:
+        email_split = email.split("@")[0]
+        email_d = re.sub(pattern="[0-9]", repl="", string=email_split)
+        parts = " "
+        if "-" in email_split:
+            parts = email_split.split("-")
+        elif "." in email_split:
+            parts = email_split.split(".")
+        elif "_" in email_split.split("_"):
+            parts = email_split.split("_")
+        else:
+            continue
+        for part in parts:
+            if part in general_list:
+                check_list.append(email)
+        if email_d in general_list:
+            check_list.append(email)
+    for em in false_email:
+        if not em in check_list:
+            fo.write(em + "\n")
 
-    # print(count)
-    # text_file = open("false_email.txt", "w")
-    # for element in false_email:
-    #     text_file.write(element + "\n")
-    # text_file.close()
 total_finder()
-# total_finder()
-# with open("false_email.txt", "r") as e:
-#     data = e.read()
-#     data = data.split("\n")
-#     count = 0
-#     f_email = []
-#     text_file = open("final_false_email.txt", "w")
-#     for email in data:
-#
-#         email_split = email.split("@")[0]
-#         for gen in general_list:
-#             if gen == email_split:
-#                 count += 1
-#                 f_email.append(email)
-#     for email in data:
-#         if not email in f_email:
-#             text_file.write(email + "\n")
-#
-#     text_file.close()
-#     print(count)
-#     print(f_email)
-
-# with open('file.txt', 'r') as file:
-#     f_file = open("file-0.txt", "w")
-#     file = file.read()
-#     file = file.split("\n")
-#     for email in limit_email:
-#         email_split = email.split("@")[0]
-#         if email_split in general_list:
-#             f_file.write(email + "\n")
-#     print(len(file))
-#     f_list = []
-
-
-    # for email in file:
-    #     email_split = email.split("@")[0]
-    #     email_re = re.sub(pattern="[0-9]", string=email_split, repl="")
-    #     if len(email_re) in range(0,4):
-    #         count += 1
-    #         print(email)
-    #         f_list.append(email)
-    # for f in file:
-    #     if f in f_list:
-    #         continue
-    #     else:
-    #         f_file.write(f + "\n")
-    # final_list = []
-    # for email in file:
-    #     email = re.sub(pattern="([0-9])", string=email, repl="")
-    #     email_split = email.split("@")[0]
-    #     parts = " "
-    #     if "-" in email_split:
-    #         parts = email_split.split("-")
-    #     if "_" in email_split:
-    #         parts = email_split.split("_")
-    #     if "." in email_split:
-    #         parts = email_split.split(".")
-    #     if not parts == " ":
-    #         for gen in general_list:
-    #             for part in parts:
-    #                 if gen == part:
-    #                     final_list.append(email)
-    # print(count)
-    # for f in file:
-    #     if not f in final_list:
-    #         f_file.write(f + "\n")
-    #
