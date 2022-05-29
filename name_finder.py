@@ -128,16 +128,25 @@ def find_general(false_list):
         for part in parts:
             if part in general_list:
                 general_emails.append(email)
+
+    with open("general_emails.txt", "w") as file:
+        for general in general_emails:
+            file.write(general + "\n")
     return general_emails
 
+def email_validation
 
-def total_finder():
+def total_finder(emails):
     """find all firstname if exist and surname if exists in a json file"""
     false_email = []
     count = 0
     true_emails = []
-
-    for email in tqdm(limit_email, total=len(limit_email)):
+    with_out_general = []
+    general_emails = find_general(false_list=limit_email)
+    for element in emails:
+        if not element in general_emails:
+            with_out_general.append(element)
+    for email in tqdm(with_out_general, total=len(with_out_general)):
 
         email_dict = name_finder(email)
         if email_dict["status"] == False:
@@ -152,30 +161,19 @@ def total_finder():
             print(colored(name_finder(email), "green"))
             count += 1
             true_emails.append(email)
-    check_list = []
+
     true_file = open("true_email.txt", "w")
     for element in true_emails:
         true_file.write(element + "\n")
-    fo = open("with_out_general_list.txt", "w")
-    for email in false_email:
-        email_split = email.split("@")[0]
-        email_d = re.sub(pattern="[0-9]", repl="", string=email_split)
-        parts = " "
-        if "-" in email_split:
-            parts = email_split.split("-")
-        elif "." in email_split:
-            parts = email_split.split(".")
-        elif "_" in email_split.split("_"):
-            parts = email_split.split("_")
-        else:
-            continue
-        for part in parts:
-            if part in general_list:
-                check_list.append(email)
-        if email_d in general_list:
-            check_list.append(email)
-    for em in false_email:
-        if not em in check_list:
-            fo.write(em + "\n")
 
-total_finder()
+    general_emails = find_general(false_list=false_email)
+    total_pattern = general_emails + true_emails
+    with open("with_out_pattern.txt", "w") as pattern:
+
+        for email in limit_email:
+            if not email in total_pattern:
+                pattern.write(email + "\n")
+
+# total_finder()
+em = "20220114180306.06e71602b7@dpdk-ubuntu.dpdklab.iol.unh.edu"
+s = re.sub(pattern="[0-9]", string=em, repl="")
